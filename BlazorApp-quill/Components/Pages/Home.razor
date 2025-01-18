@@ -1,0 +1,46 @@
+﻿@page "/"
+@inject IJSRuntime JS
+
+@rendermode InteractiveServer
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+<div class="rich-text-box">
+	<div id="richtext-input"></div>
+</div>
+
+<div class="rich-text-box">
+	<div id="richtext-input2"></div>
+</div>
+
+<div class="m-2">
+	<button class="btn btn-sm btn-primary shadow-sm" @onclick="GetCode">Get HTML</button>
+	<div class="card m-2">
+		<div class="card-body">
+			<pre class="mw-100">@text</pre>
+		</div>
+	</div>
+</div>
+
+@code {
+	string text = "Initial text";
+	IJSObjectReference? richBoxInput;
+	IJSObjectReference? richBoxInput2;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			richBoxInput = await JS.InvokeAsync<IJSObjectReference>("initRichTextBox", "richtext-input", text);
+			richBoxInput2 = await JS.InvokeAsync<IJSObjectReference>("initRichTextBox", "richtext-input2");
+		}
+	}
+
+	async Task GetCode()
+	{
+		if (richBoxInput is null) return;
+		text = await JS.InvokeAsync<string>("richTextValue", richBoxInput);
+	}
+}
