@@ -1,2 +1,2 @@
 # blazor-quill
-An attempt to use Quill.js in Blazor.
+Quill.js in Blazor.
